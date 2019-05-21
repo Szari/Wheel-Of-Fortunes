@@ -17,7 +17,7 @@ public class Server {
     public Server(){
         try {
             socket = new DatagramSocket(port);
-            socket.setSoTimeout(5000);
+            socket.setSoTimeout(10000);
             communication = new Communication(socket);
         } catch (SocketException ex) {
             System.err.println("SocketException in constructor in class Server");

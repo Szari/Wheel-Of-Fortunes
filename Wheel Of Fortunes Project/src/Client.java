@@ -15,7 +15,7 @@ public class Client extends GUI{
         this.setVisible(true);
         try{
             socket = new DatagramSocket();
-            socket.setSoTimeout(5000);
+            socket.setSoTimeout(10000);
             ButtonHandler bHandler = new ButtonHandler(socket);
             startButton.addActionListener(bHandler);
             sendText.addActionListener(bHandler);
@@ -69,6 +69,7 @@ public class Client extends GUI{
             packet = communication.getPack();
             String text = new String(packet.getData());
             String[] words = text.split(";");
+            int kwota = 0, kwotaa = 0;
             
             switch(Integer.parseInt(words[0])){
                 case 1:
@@ -83,12 +84,12 @@ public class Client extends GUI{
                         player2.setText(words[1]);
                         p2.setVisible(true);
                         pp2.setVisible(true);
-                        infoLabel.setText("<html>Czekanie na dołączenie reszty graczy<br/>Nowy gracz "+words[1]+"</html>");
+                        infoLabel.setText("Czekanie na dołączenie reszty graczy");
                     }else{
                         player3.setText(words[1]);
                         p3.setVisible(true);
                         pp3.setVisible(true);
-                        infoLabel.setText("<html>Czekanie na dołączenie reszty graczy<br/>Nowy gracz "+words[1]+"</html>");     
+                        infoLabel.setText("Czekanie na dołączenie reszty graczy");     
                     }
                     break;
                 case 3:
@@ -103,6 +104,11 @@ public class Client extends GUI{
                     infoLabel.setText("Zgaduje "+words[1]);
                     if(words[1].equals(player1.getText()))
                         sendText.setEnabled(true);
+                    kwotaa = 0;
+                    break;
+                case 6:
+                    infoLabel.setText("Zgadywane: "+ words[1]);
+                    break;
             }
             
         }

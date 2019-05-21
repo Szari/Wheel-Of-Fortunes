@@ -11,6 +11,7 @@ public class GUI extends javax.swing.JFrame {
         pp3.setVisible(false);
         haslo.setVisible(false);
         sendText.setEnabled(false);
+        stawka.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,11 +37,12 @@ public class GUI extends javax.swing.JFrame {
         tekstZgadujacego = new javax.swing.JTextField();
         sendText = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
+        stawka = new javax.swing.JLabel();
+        stawkaL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Wheel of Fortunes");
         setLocation(new java.awt.Point(300, 100));
-        setMaximumSize(new java.awt.Dimension(900, 600));
         setMinimumSize(new java.awt.Dimension(900, 600));
 
         jLabel1.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 36)); // NOI18N
@@ -104,6 +106,11 @@ public class GUI extends javax.swing.JFrame {
         infoLabel.setFont(new java.awt.Font("Microsoft YaHei", 0, 24)); // NOI18N
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        stawka.setFont(new java.awt.Font("Microsoft YaHei", 0, 18)); // NOI18N
+        stawka.setText("Stawka: ");
+
+        stawkaL.setFont(new java.awt.Font("Microsoft YaHei", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
@@ -138,9 +145,15 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(player1)))
                     .addGroup(gamePanelLayout.createSequentialGroup()
                         .addGap(291, 291, 291)
-                        .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sendText)))
+                        .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(gamePanelLayout.createSequentialGroup()
+                                .addComponent(stawka)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(stawkaL))
+                            .addGroup(gamePanelLayout.createSequentialGroup()
+                                .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sendText)))))
                 .addContainerGap(300, Short.MAX_VALUE))
             .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -161,7 +174,11 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(pp3))
                 .addGap(51, 51, 51)
                 .addComponent(infoLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(stawka, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stawkaL))
+                .addGap(34, 34, 34)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sendText))
@@ -212,6 +229,8 @@ public class GUI extends javax.swing.JFrame {
     public javax.swing.JLabel pp3;
     public javax.swing.JButton sendText;
     public javax.swing.JButton startButton;
+    public javax.swing.JLabel stawka;
+    public javax.swing.JLabel stawkaL;
     public javax.swing.JTextField tekstZgadujacego;
     // End of variables declaration//GEN-END:variables
 }

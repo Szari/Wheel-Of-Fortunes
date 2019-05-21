@@ -17,7 +17,7 @@ public class GameThread extends Thread {
     String[] usersNick = new String[3];
     int port;
     DatagramPacket toSend, toReceive;
-    String haslo;
+    String haslo, haslo2;
     
     public GameThread(int port, InetAddress[] usersIP, int[] usersPort, String[] usersNick){
         System.err.println("Wątek wystartował z nr: "+port);
@@ -27,7 +27,7 @@ public class GameThread extends Thread {
         this.usersNick = usersNick;
         try{
         this.socket = new DatagramSocket(port);
-        socket.setSoTimeout(1000);
+        socket.setSoTimeout(10000);
         }catch(SocketException ex){
             System.err.println("SocketException in construtor in thread GameThread");
         }
@@ -44,6 +44,7 @@ public class GameThread extends Thread {
                 hasla[ile++] = in.nextLine();
             }
             haslo = hasla[new Random().nextInt(ile)];
+            System.err.println(haslo);
         } catch (FileNotFoundException ex) {
             System.out.println("Plik z haslami nie istnieje");
         }
@@ -53,10 +54,11 @@ public class GameThread extends Thread {
         String temp = "";
         for(int i = 0; i < haslo.length(); i++){
             if(haslo.indexOf(i) == ' ')
-                temp+="   ";
+                temp+="  ";
             else
                 temp += "_ ";
         }
+        haslo2 = haslo;
         haslo = temp;
     }
     
@@ -68,13 +70,13 @@ public class GameThread extends Thread {
         }
         wczytajHaslo();
         zakodujHaslo();
-        for(int i = 0; i < 3; i++){
-            communication.sendPack(4, haslo, usersIP[i], usersPort[i]);
-        }
         boolean odgadniete = false;
         int zgadujacy = new Random().nextInt(3);
         DatagramPacket pakiet;
         while(!odgadniete){
+            for(int i = 0; i < 3; i++){
+                communication.sendPack(4, haslo, usersIP[i], usersPort[i]);
+            }
             if(zgadujacy == 3){
                 zgadujacy = 0;
             }
@@ -83,14 +85,43 @@ public class GameThread extends Thread {
             }
             pakiet = communication.getPack();
             communication.sendPack(5, usersNick[zgadujacy], pakiet.getAddress(), pakiet.getPort());
-            String text = new String(pakiet.getData());
-            String[] words = text.split(";");
-            if(words[1].length() == 1){
-                System.out.println("Zgaduje litere");
-            }else if(words[1].length() > 1){
-                System.out.println("Zgaduje haslo");
+            String text = new String(pakiet.getData());System.out.println("1");
+            String[] words = text.split(";");System.out.println("2");
+            text = new String(pakiet.getData());System.out.println("4");
+            words = text.split(";");System.out.println("5");
+            System.out.println(words[1]);System.out.println("6");
+            for(int i = 0; i < 3; i++){
+                communication.sendPack(6, words[1], usersIP[i], usersPort[i]);
             }
-            zgadujacy++;
+            if(words[1].length() == 1){
+                if(!sprawdzLitere(words[1])){
+                    zgadujacy++;
+                }
+            }else if(words[1].length() > 1){
+                if(!words[1].equals(haslo2)){
+                    zgadujacy++;
+                }
+            }else{
+                zgadujacy++;
+            }
         }
+    }
+    
+    private boolean sprawdzLitere(String z){
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {}
+        char znak = z.toCharArray()[0];
+        boolean czyJest = false;
+        char[] slowo = haslo.toCharArray();
+        for(int i = 0; i < haslo2.length(); i++){
+            if(znak == haslo2.charAt(i) && haslo.charAt(i*2) == '_'){
+                System.out.println(i);
+                slowo[i*2] = znak;
+                czyJest = true;
+            }
+        }
+        haslo = String.valueOf(slowo);
+        return czyJest;
     }
 }
