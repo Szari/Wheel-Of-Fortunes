@@ -10,6 +10,7 @@ import java.net.SocketException;
 public class Client extends GUI{
     DatagramSocket socket;
     int portSerwera = 1024;
+    InetAddress address;
     
     public Client(){
         this.setVisible(true);
@@ -19,6 +20,7 @@ public class Client extends GUI{
             ButtonHandler bHandler = new ButtonHandler(socket);
             startButton.addActionListener(bHandler);
             sendText.addActionListener(bHandler);
+            newGame.addActionListener(bHandler);
         }catch(SocketException ex){
             System.err.println("SocketException in constructor in class Client");
         }
@@ -37,7 +39,7 @@ public class Client extends GUI{
                 DatagramPacket toSend;
                 DatagramPacket toReceive;
                 byte[] buf = new byte[256];
-                InetAddress address = InetAddress.getByName("localhost");
+                address = InetAddress.getByName("localhost");
                 Communication communication = new Communication(socket);
                 
                 if(source == startButton){
@@ -50,6 +52,27 @@ public class Client extends GUI{
                 }else if(source == sendText){
                     communication.sendPack(22, tekstZgadujacego.getText(), address, portSerwera);
                     sendText.setEnabled(false);
+                    tekstZgadujacego.setText("");
+                }else if(source == newGame){
+                    loginPanel.setVisible(true);
+                    gamePanel.setVisible(false);
+                    p1.setVisible(false);
+                    pp1.setVisible(false);
+                    p2.setVisible(false);
+                    pp2.setVisible(false);
+                    p3.setVisible(false);
+                    pp3.setVisible(false);
+                    haslo.setVisible(false);
+                    sendText.setEnabled(false);
+                    stawka.setVisible(false);
+                    odgadywane.setVisible(false);
+                    newGame.setVisible(false);
+                    litery.setText("");
+                    player2.setVisible(false);
+                    player3.setVisible(false);
+                    stawkaL.setText("");
+                    nickname.setText(player1.getText());
+                    
                 }
                 
             }catch(IOException ex){
@@ -62,14 +85,12 @@ public class Client extends GUI{
         
         Communication communication = new Communication(socket);
         DatagramPacket packet;
-        byte[] buf;
+        int kwota = 0, kwotaa = 0;
+        
         while(true){
-            buf = new byte[256];
-            
             packet = communication.getPack();
             String text = new String(packet.getData());
             String[] words = text.split(";");
-            int kwota = 0, kwotaa = 0;
             
             switch(Integer.parseInt(words[0])){
                 case 1:
@@ -99,15 +120,48 @@ public class Client extends GUI{
                 case 4:
                     haslo.setVisible(true);
                     haslo.setText(words[1]);
+                    odgadywane.setVisible(true);
                     break;
                 case 5:
                     infoLabel.setText("Zgaduje "+words[1]);
                     if(words[1].equals(player1.getText()))
                         sendText.setEnabled(true);
-                    kwotaa = 0;
                     break;
                 case 6:
+                    if(litery.getText().equals(""))
+                        litery.setText(litery.getText().concat(words[1]));
+                    else
+                        litery.setText(litery.getText().concat(", ").concat(words[1]));
                     infoLabel.setText("Zgadywane: "+ words[1]);
+                    break;
+                case 7: 
+                    if(!stawka.isVisible())
+                        stawka.setVisible(true);
+                    kwotaa = Integer.parseInt(words[1]);
+                    stawkaL.setText(words[1]);
+                    break;
+                case 8:
+                    int ile = Integer.parseInt(words[1]);
+                    if(kwotaa != 0){
+                        kwota += (kwotaa*ile);
+                        pp1.setText(Integer.toString(kwota));
+                        communication.sendPack(23, ((player1.getText()).concat(";")).concat(Integer.toString(kwota)), address, portSerwera);
+                    }else{
+                        System.err.println("false");
+                    }
+                    break;
+                case 9: 
+                    if(player2.getText().equals(words[1]))
+                        pp2.setText(words[2]);
+                    else if(player3.getText().equals(words[1]))
+                        pp3.setText(words[2]);
+                    break;
+                case 10:
+                    infoLabel.setText("Haslo odgadniete przez: " + words[1] + ". Gratulacje!!");
+                    newGame.setVisible(true);
+                    break;
+                case 11:
+                    haslo.setText(words[1]);
                     break;
             }
             

@@ -12,6 +12,8 @@ public class GUI extends javax.swing.JFrame {
         haslo.setVisible(false);
         sendText.setEnabled(false);
         stawka.setVisible(false);
+        odgadywane.setVisible(false);
+        newGame.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -39,6 +41,9 @@ public class GUI extends javax.swing.JFrame {
         infoLabel = new javax.swing.JLabel();
         stawka = new javax.swing.JLabel();
         stawkaL = new javax.swing.JLabel();
+        odgadywane = new javax.swing.JLabel();
+        litery = new javax.swing.JLabel();
+        newGame = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Wheel of Fortunes");
@@ -111,6 +116,10 @@ public class GUI extends javax.swing.JFrame {
 
         stawkaL.setFont(new java.awt.Font("Microsoft YaHei", 0, 18)); // NOI18N
 
+        odgadywane.setText("Już odgadywane: ");
+
+        newGame.setText("Nowa gra");
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
@@ -132,6 +141,7 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pp3)))
                 .addGap(25, 25, 25))
+            .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -153,16 +163,26 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(gamePanelLayout.createSequentialGroup()
                                 .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(sendText)))))
-                .addContainerGap(300, Short.MAX_VALUE))
-            .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(sendText)
+                                .addGap(18, 18, 18)
+                                .addComponent(newGame))))
+                    .addGroup(gamePanelLayout.createSequentialGroup()
+                        .addGap(230, 230, 230)
+                        .addComponent(odgadywane)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(litery)))
+                .addContainerGap(195, Short.MAX_VALUE))
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addGap(140, 140, 140)
                 .addComponent(haslo)
-                .addGap(67, 67, 67)
+                .addGap(18, 18, 18)
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(odgadywane)
+                    .addComponent(litery))
+                .addGap(33, 33, 33)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(player2)
                     .addComponent(player3))
@@ -181,7 +201,8 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sendText))
+                    .addComponent(sendText)
+                    .addComponent(newGame))
                 .addGap(4, 4, 4)
                 .addComponent(player1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -216,8 +237,11 @@ public class GUI extends javax.swing.JFrame {
     public javax.swing.JLabel infoLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel litery;
     public javax.swing.JPanel loginPanel;
+    public javax.swing.JButton newGame;
     public javax.swing.JTextField nickname;
+    public javax.swing.JLabel odgadywane;
     public javax.swing.JLabel p1;
     public javax.swing.JLabel p2;
     public javax.swing.JLabel p3;
