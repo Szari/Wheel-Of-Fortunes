@@ -29,19 +29,21 @@ public class Server {
         while(true){
             while(countOfUsers != 3){
                 DatagramPacket pakiet = communication.getPack();
-                String text = new String(pakiet.getData());
-                String[] words = text.split(";");
-                if(words[0].equals("1")){
-                    String temp = checkNick(words[1]);
-                    usersNick[countOfUsers] = temp;
-                    usersIP[countOfUsers] = pakiet.getAddress();
-                    usersPort[countOfUsers] = pakiet.getPort();
-                    communication.sendPack(1, temp, usersIP[countOfUsers], usersPort[countOfUsers]);
-                    communication.sendPack(1, temp, usersIP[countOfUsers], usersPort[countOfUsers]);
-                    countOfUsers++;
-                    for(int i = 0; i < countOfUsers; i++)
-                        for(int j = 0; j < countOfUsers; j++)
-                            communication.sendPack(2, usersNick[i], usersIP[j], usersPort[j]);
+                if(pakiet != null){
+                    String text = new String(pakiet.getData());
+                    String[] words = text.split(";");
+                    if(words[0].equals("1")){
+                        String temp = checkNick(words[1]);
+                        usersNick[countOfUsers] = temp;
+                        usersIP[countOfUsers] = pakiet.getAddress();
+                        usersPort[countOfUsers] = pakiet.getPort();
+                        communication.sendPack(1, temp, usersIP[countOfUsers], usersPort[countOfUsers]);
+                        communication.sendPack(1, temp, usersIP[countOfUsers], usersPort[countOfUsers]);
+                        countOfUsers++;
+                        for(int i = 0; i < countOfUsers; i++)
+                            for(int j = 0; j < countOfUsers; j++)
+                                communication.sendPack(2, usersNick[i], usersIP[j], usersPort[j]);
+                    }
                 }
             }
             

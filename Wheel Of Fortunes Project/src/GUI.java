@@ -14,6 +14,7 @@ public class GUI extends javax.swing.JFrame {
         stawka.setVisible(false);
         odgadywane.setVisible(false);
         newGame.setVisible(false);
+        errorLogin.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -25,6 +26,7 @@ public class GUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         nickname = new javax.swing.JTextField();
         startButton = new javax.swing.JButton();
+        errorLogin = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
         haslo = new javax.swing.JLabel();
         player1 = new javax.swing.JLabel();
@@ -58,6 +60,9 @@ public class GUI extends javax.swing.JFrame {
 
         startButton.setText("Start");
 
+        errorLogin.setForeground(new java.awt.Color(255, 0, 0));
+        errorLogin.setText("Nickname powinien być dłuższy niż 3 znaki ");
+
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
         loginPanelLayout.setHorizontalGroup(
@@ -70,20 +75,26 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                     .addComponent(nickname))
-                .addContainerGap(302, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
+                .addContainerGap(334, Short.MAX_VALUE)
+                .addComponent(errorLogin)
+                .addGap(319, 319, 319))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(loginPanelLayout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(jLabel1)
-                .addGap(188, 188, 188)
+                .addGap(154, 154, 154)
+                .addComponent(errorLogin)
+                .addGap(18, 18, 18)
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(nickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(startButton)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(167, Short.MAX_VALUE))
         );
 
         haslo.setFont(new java.awt.Font("Palatino Linotype", 0, 24)); // NOI18N
@@ -232,6 +243,7 @@ public class GUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel errorLogin;
     public javax.swing.JPanel gamePanel;
     public javax.swing.JLabel haslo;
     public javax.swing.JLabel infoLabel;

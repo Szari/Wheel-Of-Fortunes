@@ -48,6 +48,8 @@ public class Client extends GUI{
                         loginPanel.setVisible(false);
                         gamePanel.setVisible(true);
                         communication.sendPack(1, nick, address, portSerwera);
+                    }else{
+                        errorLogin.setVisible(true);
                     }
                 }else if(source == sendText){
                     communication.sendPack(22, tekstZgadujacego.getText(), address, portSerwera);
@@ -60,16 +62,16 @@ public class Client extends GUI{
                     pp1.setVisible(false);
                     p2.setVisible(false);
                     pp2.setVisible(false);
+                    player2.setText("");
                     p3.setVisible(false);
                     pp3.setVisible(false);
+                    player3.setText("");
                     haslo.setVisible(false);
                     sendText.setEnabled(false);
                     stawka.setVisible(false);
                     odgadywane.setVisible(false);
                     newGame.setVisible(false);
                     litery.setText("");
-                    player2.setVisible(false);
-                    player3.setVisible(false);
                     stawkaL.setText("");
                     nickname.setText(player1.getText());
                     
@@ -89,6 +91,7 @@ public class Client extends GUI{
         
         while(true){
             packet = communication.getPack();
+            if(sprawdzKomunikacje(packet)){
             String text = new String(packet.getData());
             String[] words = text.split(";");
             
@@ -101,17 +104,17 @@ public class Client extends GUI{
                     break;
                 case 2:
                     if(!words[1].equals(player1.getText()))
-                    if(player2.getText().equals("")){
-                        player2.setText(words[1]);
-                        p2.setVisible(true);
-                        pp2.setVisible(true);
-                        infoLabel.setText("Czekanie na dołączenie reszty graczy");
-                    }else{
-                        player3.setText(words[1]);
-                        p3.setVisible(true);
-                        pp3.setVisible(true);
-                        infoLabel.setText("Czekanie na dołączenie reszty graczy");     
-                    }
+                        if(player2.getText().equals("")){
+                            player2.setText(words[1]);
+                            p2.setVisible(true);
+                            pp2.setVisible(true);
+                            infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                        }else{
+                            player3.setText(words[1]);
+                            p3.setVisible(true);
+                            pp3.setVisible(true);
+                            infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                        }
                     break;
                 case 3:
                     infoLabel.setText("Zaczynamy rozgrywkę");
@@ -134,7 +137,7 @@ public class Client extends GUI{
                         litery.setText(litery.getText().concat(", ").concat(words[1]));
                     infoLabel.setText("Zgadywane: "+ words[1]);
                     break;
-                case 7: 
+                case 7:
                     if(!stawka.isVisible())
                         stawka.setVisible(true);
                     kwotaa = Integer.parseInt(words[1]);
@@ -150,7 +153,7 @@ public class Client extends GUI{
                         System.err.println("false");
                     }
                     break;
-                case 9: 
+                case 9:
                     if(player2.getText().equals(words[1]))
                         pp2.setText(words[2]);
                     else if(player3.getText().equals(words[1]))
@@ -159,14 +162,26 @@ public class Client extends GUI{
                 case 10:
                     infoLabel.setText("Haslo odgadniete przez: " + words[1] + ". Gratulacje!!");
                     newGame.setVisible(true);
+                    portSerwera = 1024;
                     break;
                 case 11:
                     haslo.setText(words[1]);
                     break;
             }
-            
+            }
         }
         
+    }
+    
+    boolean sprawdzKomunikacje(DatagramPacket packet){
+        if(packet == null){
+            infoLabel.setText("Brak odpowiedzi od serwera. Gra przerwana");
+            newGame.setVisible(true);
+            portSerwera = 1024;
+            sendText.setEnabled(false);
+            return false;
+        }
+        return true;
     }
     
     public static void main (String[] args){

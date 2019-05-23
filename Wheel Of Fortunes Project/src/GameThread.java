@@ -28,8 +28,8 @@ public class GameThread extends Thread {
         this.usersPort = usersPort;
         this.usersNick = usersNick;
         try{
-        this.socket = new DatagramSocket(port);
-        socket.setSoTimeout(10000);
+            this.socket = new DatagramSocket(port);
+            socket.setSoTimeout(10000);
         }catch(SocketException ex){
             System.err.println("SocketException in construtor in thread GameThread");
         }
@@ -53,32 +53,39 @@ public class GameThread extends Thread {
             // zakodowane haslo
             sendToAll(4, haslo);
             
-            // zgadujacy 
+            // zgadujacy
             sendToAll(5, usersNick[zgadujacy]);
             
-            // stawka 
+            // stawka
             sendToAll(7, Integer.toString(rand));
             
             // odbieram tekst wyslany przez uzytkownika
             pakiet = communication.getPack();
-            communication.sendPack(5, usersNick[zgadujacy], pakiet.getAddress(), pakiet.getPort());
-            
-            String text = new String(pakiet.getData());
-            String[] words = text.split(";");
-            
-            // wyslanie obecnie zgadywaniego tekstu
-            sendToAll(6, words[1]);
-
-            if(!sprawdz(words[1], pakiet))
-                zgadujacy++;
-            else{
-                // odbieram kwote obecnie grajacego uzytkownika
-                pakiet = communication.getPack();
-                text = new String(pakiet.getData());
-                words = text.split(";");
-                sendToAll(9, words[1].concat(";").concat(words[2]));
+            if(sprawdzKomunikacje(pakiet)){
+                communication.sendPack(5, usersNick[zgadujacy], pakiet.getAddress(), pakiet.getPort());
+                
+                String text = new String(pakiet.getData());
+                String[] words = text.split(";");
+                
+                // wyslanie obecnie zgadywaniego tekstu
+                sendToAll(6, words[1]);
+                
+                if(!sprawdz(words[1], pakiet))
+                    zgadujacy++;
+                else{
+                    // odbieram kwote obecnie grajacego uzytkownika
+                    pakiet = communication.getPack();
+                    if(sprawdzKomunikacje(pakiet)){
+                        text = new String(pakiet.getData());
+                        words = text.split(";");
+                        sendToAll(9, words[1].concat(";").concat(words[2]));
+                    }
+                }
+            }else{
+                break;
             }
         }
+        System.err.println("Thread "+ port + " kończy działanie");
     }
     
     private void wczytajHaslo(){
@@ -134,29 +141,29 @@ public class GameThread extends Thread {
     private boolean sprawdz(String text, DatagramPacket pakiet){
         int ile = 0;
         if(text.length() == 1){
-                ile = sprawdzLitere(text);
-                if(ile==0){
-                    return false;
-                }
-                System.out.println(haslo);
-                boolean jest = false;
-                for(int i = 0; i < haslo.length(); i++){
-                    if(haslo.charAt(i) == '_'){
-                        jest = true;
-                        break;
-                    }
-                }
-                if(!jest){
-                    odgadniete = true;
-                }
-            }else if(text.length() > 1){
-                if(!text.equals(haslo2)){
-                    return false;
-                }
-                else{
-                    odgadniete = true;
+            ile = sprawdzLitere(text);
+            if(ile==0){
+                return false;
+            }
+            System.out.println(haslo);
+            boolean jest = false;
+            for(int i = 0; i < haslo.length(); i++){
+                if(haslo.charAt(i) == '_'){
+                    jest = true;
+                    break;
                 }
             }
+            if(!jest){
+                odgadniete = true;
+            }
+        }else if(text.length() > 1){
+            if(!text.equals(haslo2)){
+                return false;
+            }
+            else{
+                odgadniete = true;
+            }
+        }
         String ilee = String.valueOf(ile);
         communication.sendPack(8, ilee , pakiet.getAddress(), pakiet.getPort());
         if(odgadniete){
@@ -179,7 +186,14 @@ public class GameThread extends Thread {
     
     private void sendToAll(int nr, String text){
         for(int i = 0; i < 3; i++){
-                communication.sendPack(nr, text, usersIP[i], usersPort[i]);
-            }
+            communication.sendPack(nr, text, usersIP[i], usersPort[i]);
+        }
+    }
+    
+    private boolean sprawdzKomunikacje(DatagramPacket packet){
+        if(packet == null){
+            return false;
+        }
+        return true;
     }
 }
