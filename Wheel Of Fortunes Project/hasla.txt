@@ -5,3 +5,18 @@ cyrkiel
 klawiatura
 monitor
 dinozaur
+technologia
+administracja
+kompilator
+mikroprocesor
+jezyk programowania
+algorytmika
+dokumentacja
+system kontroli wersji
+system operacyjny
+konsolidacja
+debugowanie
+modelowanie
+programista
+notacja binarna
+kolo zebate

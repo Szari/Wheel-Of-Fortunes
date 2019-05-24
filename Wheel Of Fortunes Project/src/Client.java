@@ -1,4 +1,3 @@
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -84,7 +83,6 @@ public class Client extends GUI{
     }
     
     public void run(){
-        
         Communication communication = new Communication(socket);
         DatagramPacket packet;
         int kwota = 0, kwotaa = 0;
@@ -92,82 +90,93 @@ public class Client extends GUI{
         while(true){
             packet = communication.getPack();
             if(sprawdzKomunikacje(packet)){
-            String text = new String(packet.getData());
-            String[] words = text.split(";");
-            
-            switch(Integer.parseInt(words[0])){
-                case 1:
-                    player1.setText(words[1]);
-                    p1.setVisible(true);
-                    pp1.setVisible(true);
-                    infoLabel.setText("Czekanie na dołączenie reszty graczy");
-                    break;
-                case 2:
-                    if(!words[1].equals(player1.getText()))
-                        if(player2.getText().equals("")){
-                            player2.setText(words[1]);
-                            p2.setVisible(true);
-                            pp2.setVisible(true);
-                            infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                String text = new String(packet.getData());
+                String[] words = text.split(";");
+                
+                switch(Integer.parseInt(words[0])){
+                    // potwierdzenie nicku 
+                    case 1:
+                        player1.setText(words[1]);
+                        p1.setVisible(true);
+                        pp1.setVisible(true);
+                        infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                        break;
+                    // otrzymanie wszystkich nickow w pokoju i ustawienie ich
+                    case 2:
+                        if(!words[1].equals(player1.getText()))
+                            if(player2.getText().equals("")){
+                                player2.setText(words[1]);
+                                p2.setVisible(true);
+                                pp2.setVisible(true);
+                                infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                            }else{
+                                player3.setText(words[1]);
+                                p3.setVisible(true);
+                                pp3.setVisible(true);
+                                infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                            }
+                        break;
+                    // przywitanie się serwera
+                    case 3:
+                        infoLabel.setText("Zaczynamy rozgrywkę");
+                        portSerwera = Integer.parseInt(words[1]);
+                        break;
+                    // otrzymanie hasla
+                    case 4:
+                        haslo.setVisible(true);
+                        haslo.setText(words[1]);
+                        odgadywane.setVisible(true);
+                        break;
+                    // otrzymanie informacji kto zgaduje 
+                    case 5:
+                        infoLabel.setText("Zgaduje "+words[1]);
+                        if(words[1].equals(player1.getText()))
+                            sendText.setEnabled(true);
+                        break;
+                    // otrzymanie zgadywanego hasla/literki
+                    case 6:
+                        if(litery.getText().equals(""))
+                            litery.setText(litery.getText().concat(words[1]));
+                        else
+                            litery.setText(litery.getText().concat(", ").concat(words[1]));
+                        infoLabel.setText("Zgadywane: "+ words[1]);
+                        break;
+                    // otrzymanie o jaką stawkę gra
+                    case 7:
+                        if(!stawka.isVisible())
+                            stawka.setVisible(true);
+                        kwotaa = Integer.parseInt(words[1]);
+                        stawkaL.setText(words[1]);
+                        break;
+                    // otrzymuje ile trafił znakow
+                    case 8:
+                        int ile = Integer.parseInt(words[1]);
+                        if(kwotaa != 0){
+                            kwota += (kwotaa*ile);
+                            pp1.setText(Integer.toString(kwota));
+                            communication.sendPack(23, ((player1.getText()).concat(";")).concat(Integer.toString(kwota)), address, portSerwera);
                         }else{
-                            player3.setText(words[1]);
-                            p3.setVisible(true);
-                            pp3.setVisible(true);
-                            infoLabel.setText("Czekanie na dołączenie reszty graczy");
+                            System.err.println("false");
                         }
-                    break;
-                case 3:
-                    infoLabel.setText("Zaczynamy rozgrywkę");
-                    portSerwera = Integer.parseInt(words[1]);
-                    break;
-                case 4:
-                    haslo.setVisible(true);
-                    haslo.setText(words[1]);
-                    odgadywane.setVisible(true);
-                    break;
-                case 5:
-                    infoLabel.setText("Zgaduje "+words[1]);
-                    if(words[1].equals(player1.getText()))
-                        sendText.setEnabled(true);
-                    break;
-                case 6:
-                    if(litery.getText().equals(""))
-                        litery.setText(litery.getText().concat(words[1]));
-                    else
-                        litery.setText(litery.getText().concat(", ").concat(words[1]));
-                    infoLabel.setText("Zgadywane: "+ words[1]);
-                    break;
-                case 7:
-                    if(!stawka.isVisible())
-                        stawka.setVisible(true);
-                    kwotaa = Integer.parseInt(words[1]);
-                    stawkaL.setText(words[1]);
-                    break;
-                case 8:
-                    int ile = Integer.parseInt(words[1]);
-                    if(kwotaa != 0){
-                        kwota += (kwotaa*ile);
-                        pp1.setText(Integer.toString(kwota));
-                        communication.sendPack(23, ((player1.getText()).concat(";")).concat(Integer.toString(kwota)), address, portSerwera);
-                    }else{
-                        System.err.println("false");
-                    }
-                    break;
-                case 9:
-                    if(player2.getText().equals(words[1]))
-                        pp2.setText(words[2]);
-                    else if(player3.getText().equals(words[1]))
-                        pp3.setText(words[2]);
-                    break;
-                case 10:
-                    infoLabel.setText("Haslo odgadniete przez: " + words[1] + ". Gratulacje!!");
-                    newGame.setVisible(true);
-                    portSerwera = 1024;
-                    break;
-                case 11:
-                    haslo.setText(words[1]);
-                    break;
-            }
+                        break;
+                    // orzymanie punktow innych uzytkownikow
+                    case 9:
+                        if(player2.getText().equals(words[1]))
+                            pp2.setText(words[2]);
+                        else if(player3.getText().equals(words[1]))
+                            pp3.setText(words[2]);
+                        break;
+                    // otrzymane przy wygraniu 
+                    case 10:
+                        infoLabel.setText("Haslo odgadniete przez: " + words[1] + ". Gratulacje!!");
+                        newGame.setVisible(true);
+                        portSerwera = 1024;
+                        break;
+                    // otrzymanie zgadnietego hasla 
+                    case 11:
+                        haslo.setText(words[1]);
+                        break;
+                }
             }
         }
         

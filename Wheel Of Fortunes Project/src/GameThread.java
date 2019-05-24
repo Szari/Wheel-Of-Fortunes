@@ -1,7 +1,6 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -50,6 +49,7 @@ public class GameThread extends Thread {
         while(!odgadniete){
             if(zgadujacy == 3) zgadujacy = 0;
             rand = new Random().nextInt(1400)+100;
+            
             // zakodowane haslo
             sendToAll(4, haslo);
             
@@ -66,7 +66,7 @@ public class GameThread extends Thread {
                 
                 String text = new String(pakiet.getData());
                 String[] words = text.split(";");
-                
+
                 // wyslanie obecnie zgadywaniego tekstu
                 sendToAll(6, words[1]);
                 
@@ -191,9 +191,6 @@ public class GameThread extends Thread {
     }
     
     private boolean sprawdzKomunikacje(DatagramPacket packet){
-        if(packet == null){
-            return false;
-        }
-        return true;
+        return packet != null;
     }
 }

@@ -26,14 +26,12 @@ public class Communication {
         socket.send(toSend);}catch(IOException ex){}
         while(!reached){
             try{
-//                socket.send(toSend);
                 socket.receive(toReceive);
-//                if(new String(toReceive.getData()).split(";")[0].equals(Integer.toString(nr)))
-                    reached = true;
-                
+                reached = true;
             }catch(SocketTimeoutException ex){
                 try{
-                socket.send(toSend);}catch(IOException dsdasdsadsdsda){}
+                socket.send(toSend);
+                }catch(IOException e){}
                 System.out.println("Waiting for confirmaton package number "+nr);
             }
             catch(IOException ex){
