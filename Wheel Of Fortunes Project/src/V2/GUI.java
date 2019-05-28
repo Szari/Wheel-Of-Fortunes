@@ -1,22 +1,17 @@
+package V2;
+
 public class GUI extends javax.swing.JFrame {
 
     public GUI() {
         initComponents();
-        gamePanel.setVisible(false);
-        p1.setVisible(false);
-        pp1.setVisible(false);
-        p2.setVisible(false);
-        pp2.setVisible(false);
-        p3.setVisible(false);
-        pp3.setVisible(false);
-        haslo.setVisible(false);
-        sendText.setEnabled(false);
-        stawka.setVisible(false);
-        odgadywane.setVisible(false);
-        newGame.setVisible(false);
-        errorLogin.setVisible(false);
+        resetComponents();
+        loginPanel.setVisible(true);
+        jLabel1.setVisible(true);
+        jLabel2.setVisible(true);
+        nickname.setVisible(true);
+        startButton.setVisible(true);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -46,11 +41,15 @@ public class GUI extends javax.swing.JFrame {
         odgadywane = new javax.swing.JLabel();
         litery = new javax.swing.JLabel();
         newGame = new javax.swing.JButton();
+        waitingPanel = new javax.swing.JPanel();
+        loginLabel = new javax.swing.JLabel();
+        loginInLobby = new javax.swing.JLabel();
+        nrPokoju = new javax.swing.JTextField();
+        roomButton = new javax.swing.JButton();
+        pokoje = new javax.swing.JTextArea();
+        errorLobby = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Wheel of Fortunes");
-        setLocation(new java.awt.Point(300, 100));
-        setMinimumSize(new java.awt.Dimension(900, 600));
 
         jLabel1.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -69,17 +68,15 @@ public class GUI extends javax.swing.JFrame {
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(loginPanelLayout.createSequentialGroup()
-                .addGap(217, 217, 217)
+                .addGap(204, 204, 204)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
-                    .addComponent(nickname))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginPanelLayout.createSequentialGroup()
-                .addContainerGap(334, Short.MAX_VALUE)
-                .addComponent(errorLogin)
-                .addGap(319, 319, 319))
+                .addGap(18, 18, 18)
+                .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errorLogin)
+                    .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                        .addComponent(nickname)))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,6 +115,7 @@ public class GUI extends javax.swing.JFrame {
         tekstZgadujacego.setToolTipText("");
 
         sendText.setText("Guess");
+        sendText.setEnabled(false);
 
         infoLabel.setFont(new java.awt.Font("Microsoft YaHei", 0, 24)); // NOI18N
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -197,7 +195,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(player2)
                     .addComponent(player3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(p2)
                     .addComponent(pp2)
@@ -205,7 +203,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(pp3))
                 .addGap(51, 51, 51)
                 .addComponent(infoLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(stawka, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(stawkaL))
@@ -223,26 +221,150 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(37, 37, 37))
         );
 
+        waitingPanel.setPreferredSize(new java.awt.Dimension(900, 600));
+
+        loginLabel.setText("Twój login:");
+
+        nrPokoju.setToolTipText("Wpisz numer pokoju");
+
+        roomButton.setText("Wybierz pokój");
+        roomButton.setActionCommand("");
+
+        pokoje.setEditable(false);
+        pokoje.setColumns(20);
+        pokoje.setRows(5);
+
+        errorLobby.setFont(new java.awt.Font("Microsoft YaHei UI Light", 0, 14)); // NOI18N
+        errorLobby.setForeground(new java.awt.Color(255, 0, 0));
+        errorLobby.setText("Wybierz odpowiedni numer pokoju, jeden z pokazanych powyżej.");
+
+        javax.swing.GroupLayout waitingPanelLayout = new javax.swing.GroupLayout(waitingPanel);
+        waitingPanel.setLayout(waitingPanelLayout);
+        waitingPanelLayout.setHorizontalGroup(
+            waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(waitingPanelLayout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(waitingPanelLayout.createSequentialGroup()
+                        .addComponent(errorLobby)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(waitingPanelLayout.createSequentialGroup()
+                        .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(waitingPanelLayout.createSequentialGroup()
+                                .addComponent(nrPokoju, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(roomButton, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(pokoje, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addComponent(loginLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(loginInLobby)
+                        .addGap(246, 246, 246))))
+        );
+        waitingPanelLayout.setVerticalGroup(
+            waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(waitingPanelLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loginLabel)
+                    .addComponent(loginInLobby)
+                    .addComponent(pokoje, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nrPokoju, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(roomButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errorLobby)
+                .addContainerGap(399, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(loginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 900, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(waitingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(loginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 600, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(waitingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> {
+            new GUI().setVisible(true);
+        });
+    }
+    
+    public final void resetComponents(){
+        errorLogin.setVisible(false);
+        gamePanel.setVisible(false);
+        haslo.setVisible(false);
+        infoLabel.setVisible(false);
+        jLabel1.setVisible(false);
+        jLabel2.setVisible(false);
+        litery.setVisible(false);
+        loginInLobby.setVisible(false);
+        loginLabel.setVisible(false);
+        loginPanel.setVisible(false);
+        newGame.setVisible(false);
+        nickname.setVisible(false);
+        nrPokoju.setVisible(false);
+        odgadywane.setVisible(false);
+        p1.setVisible(false);
+        p2.setVisible(false);
+        p3.setVisible(false);
+        player1.setVisible(false);
+        player2.setVisible(false);
+        player3.setVisible(false);
+        pokoje.setVisible(false);
+        pp1.setVisible(false);
+        pp2.setVisible(false);
+        pp3.setVisible(false);
+        roomButton.setVisible(false);
+        sendText.setVisible(false);
+        startButton.setVisible(false);
+        stawka.setVisible(false);
+        stawkaL.setVisible(false);
+        tekstZgadujacego.setVisible(false);
+        waitingPanel.setVisible(false);
+        errorLobby.setVisible(false);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel errorLobby;
     public javax.swing.JLabel errorLogin;
     public javax.swing.JPanel gamePanel;
     public javax.swing.JLabel haslo;
@@ -250,9 +372,12 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     public javax.swing.JLabel litery;
+    public javax.swing.JLabel loginInLobby;
+    public javax.swing.JLabel loginLabel;
     public javax.swing.JPanel loginPanel;
     public javax.swing.JButton newGame;
     public javax.swing.JTextField nickname;
+    public javax.swing.JTextField nrPokoju;
     public javax.swing.JLabel odgadywane;
     public javax.swing.JLabel p1;
     public javax.swing.JLabel p2;
@@ -260,13 +385,16 @@ public class GUI extends javax.swing.JFrame {
     public javax.swing.JLabel player1;
     public javax.swing.JLabel player2;
     public javax.swing.JLabel player3;
+    public javax.swing.JTextArea pokoje;
     public javax.swing.JLabel pp1;
     public javax.swing.JLabel pp2;
     public javax.swing.JLabel pp3;
+    public javax.swing.JButton roomButton;
     public javax.swing.JButton sendText;
     public javax.swing.JButton startButton;
     public javax.swing.JLabel stawka;
     public javax.swing.JLabel stawkaL;
     public javax.swing.JTextField tekstZgadujacego;
+    public javax.swing.JPanel waitingPanel;
     // End of variables declaration//GEN-END:variables
 }
