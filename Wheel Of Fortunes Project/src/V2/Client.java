@@ -16,7 +16,7 @@ public class Client extends GUI{
     InetAddress address;
     String myNickname;
     ButtonHandler bHandler;
-    int pokoj;
+        int pokoj;
     
     public Client(){
         this.setVisible(true);
@@ -28,6 +28,9 @@ public class Client extends GUI{
             startButton.addActionListener(bHandler);
             roomButton.addActionListener(bHandler);
             sendText.addActionListener(bHandler);
+            leaveButton.addActionListener(bHandler);
+            exitButton.addActionListener(bHandler);
+            newGame.addActionListener(bHandler);
         }catch(SocketException se){
             System.err.println("SE");
         }catch(UnknownHostException uhe){
@@ -39,7 +42,9 @@ public class Client extends GUI{
         Client client = new Client();
         client.run();
     }
-    
+    /**
+     * Funckja nasłuchująca i reagująca odpowiednio do otrzymanego pakietu
+     */
     private void run(){
         DatagramPacket packet;
         String[] words;
@@ -59,15 +64,15 @@ public class Client extends GUI{
                     pp1.setVisible(true);
                     break;
                 case 2:
-                    pokoje.setVisible(true);
-                    nrPokoju.setVisible(true);
+                        pokoje.setVisible(true);
+                        nrPokoju.setVisible(true);
                     roomButton.setVisible(true);
-                    String temp = "Wolne pokoje: ";
+                        String temp = "Wolne pokoje: ";
                     for(int i = 1; i < words.length; i++){
                         temp = temp.concat(words[i]).concat(", ");
                     }
-                    pokoje.setLineWrap(true);
-                    pokoje.setText(temp);
+                        pokoje.setLineWrap(true);
+                        pokoje.setText(temp);
                     break;
                 case 3:
                     if(!words[1].equals(player1.getText())){
@@ -87,6 +92,8 @@ public class Client extends GUI{
                     break;
                 case 4:
                     infoLabel.setText("Zaczynamy rozgrywkę");
+                    leaveButton.setEnabled(false);
+                    exitButton.setEnabled(true);
                     break;
                 case 5:
                     haslo.setVisible(true);
@@ -119,7 +126,7 @@ public class Client extends GUI{
                     if(kwotaa != 0){
                         kwota += (kwotaa*ile);
                         pp1.setText(Integer.toString(kwota));
-                        sendPack(103, (Integer.toString(pokoj)).concat(";").concat(player1.getText()).concat(";").concat(Integer.toString(kwota)));
+                            sendPack(103, (Integer.toString(pokoj)).concat(";").concat(player1.getText()).concat(";").concat(Integer.toString(kwota)));
                     }
                     break;
                 case 10:
@@ -136,21 +143,73 @@ public class Client extends GUI{
                     haslo.setText(words[2]);
                     newGame.setVisible(true);
                     break;
+                case 12:
+                    if(player2.getText().equals(words[1])){
+                        player2.setText("");
+                        p2.setVisible(false);
+                        pp2.setVisible(false);
+                    }else if(player3.getText().equals(words[1])){
+                        player3.setText("");
+                        p3.setVisible(false);
+                        pp3.setVisible(false);
+                    }
+                    break;
+                case 13:
+                    waitingPanel.setVisible(true);
+                    gamePanel.setVisible(false);
+                    p2.setVisible(false);
+                    pp2.setVisible(false);
+                    player2.setText("");
+                    p3.setVisible(false);
+                    pp3.setVisible(false);
+                    player3.setText("");
+                    haslo.setVisible(false);
+                    sendText.setEnabled(false);
+                    stawka.setVisible(false);
+                    odgadywane.setVisible(false);
+                    newGame.setVisible(false);
+                    litery.setText("");
+                    stawkaL.setText("");
+                    errorLobby1.setVisible(true);
+                    leaveButton.setEnabled(true);
+                    exitButton.setEnabled(true);
+                    break;
             }
         }
     }
-    
+    /**
+     * Funkcja wysyłająca pakiet do serwera
+     * @param nrPack    numer pakietu
+     * @param text      zawartość pakietu
+     */
     private void sendPack(int nrPack, String text){
+        boolean reached = false;
+        byte[] daneDO = new byte[256];
         byte[] daneDW = (Integer.toString(nrPack) + ";" + text + ";").getBytes();
         System.out.println("Sended: " + Integer.toString(nrPack) + ";" + text + ";");
         DatagramPacket toSend = new DatagramPacket(daneDW, daneDW.length, address, portSerwera);
+        DatagramPacket toReceive = new DatagramPacket(daneDO, daneDO.length);
         try{
             socket.send(toSend);
+            while(!reached){
+            try{
+                socket.receive(toReceive);
+                reached = true;
+            }catch(SocketTimeoutException ex){
+                try{
+                socket.send(toSend);
+                }catch(IOException e){}
+                System.out.println("Waiting for confirmaton package number "+nrPack);
+            }
+            }
         }catch(IOException ioe){
             System.err.println("IOE");
         }
     }
-    
+    /**
+     * Odbiera pakiet
+     * @return      Zwraca otrzymany pakiet
+     */
     private DatagramPacket getPack(){
         byte[] daneDO = new byte[256];
         byte[] daneDW = new byte[256];
@@ -173,16 +232,19 @@ public class Client extends GUI{
         
         return toReceive;
     }
-    
+    /**
+     * Zamienia pakiet na tablice ciągów znaków
+     * @param packet    Pakiet do przekonwertowania
+     * @return          Tablica ciagów znaków
+     */
     private String[] packToArray(DatagramPacket packet){
         return new String(packet.getData()).split(";");
     }
     
     
-    
-    
-    
-    //  ======= BUTTON HANDLER ==========
+    /**
+     * Klasa nasłuchująca reakcji z przyciskami
+     */
     public class ButtonHandler implements ActionListener{
         DatagramSocket socket;
 
@@ -206,15 +268,16 @@ public class Client extends GUI{
                     }
                 }
                 else if(source == roomButton){
-                    pokoj = Integer.parseInt(nrPokoju.getText());
-                    if(pokoj > 0 && pokoj < 50){
+                            pokoj = Integer.parseInt(nrPokoju.getText());
+                    errorLobby1.setVisible(false);
+                            if(pokoj > 0 && pokoj < 50){
                         waitingPanel.setVisible(false);
                         gamePanel.setVisible(true);
                         tekstZgadujacego.setVisible(true);
                         sendText.setVisible(true);
                         infoLabel.setVisible(true);
                         infoLabel.setText("Oczekiwanie na resztę graczy...");
-                        sendPack(101, Integer.toString(pokoj).concat(";").concat(myNickname));
+                            sendPack(101, Integer.toString(pokoj).concat(";").concat(myNickname));
                     }else{
                         errorLobby.setVisible(true);
                     }
@@ -222,12 +285,59 @@ public class Client extends GUI{
                 else if(source == sendText){
                     if(tekstZgadujacego.getText().length()>0){
                         sendText.setEnabled(false);
-                        sendPack(102, Integer.toString(pokoj).concat(";").concat(tekstZgadujacego.getText()));
+                            sendPack(102, Integer.toString(pokoj).concat(";").concat(tekstZgadujacego.getText()));
                         tekstZgadujacego.setText("");
                     }
                 }
+                else if(source == newGame){
+                    waitingPanel.setVisible(true);
+                    gamePanel.setVisible(false);
+                    p1.setVisible(false);
+                    pp1.setVisible(false);
+                    p2.setVisible(false);
+                    pp2.setVisible(false);
+                    player2.setText("");
+                    p3.setVisible(false);
+                    pp3.setVisible(false);
+                    player3.setText("");
+                    haslo.setVisible(false);
+                    sendText.setEnabled(false);
+                    stawka.setVisible(false);
+                    odgadywane.setVisible(false);
+                    newGame.setVisible(false);
+                    litery.setText("");
+                    stawkaL.setText("");
+                    leaveButton.setEnabled(true);
+                    exitButton.setEnabled(false);
+                }
+                else if(source == leaveButton){
+                    waitingPanel.setVisible(true);
+                    gamePanel.setVisible(false);
+                    p2.setVisible(false);
+                    pp2.setVisible(false);
+                    player2.setText("");
+                    p3.setVisible(false);
+                    pp3.setVisible(false);
+                    player3.setText("");
+                    haslo.setVisible(false);
+                    sendText.setEnabled(false);
+                    stawka.setVisible(false);
+                    odgadywane.setVisible(false);
+                    newGame.setVisible(false);
+                    litery.setText("");
+                    stawkaL.setText("");
+                        sendPack(104, Integer.toString(pokoj).concat(";").concat(myNickname));
+                }
+                else if(source == exitButton){
+                        sendPack(105, Integer.toString(pokoj).concat(";").concat(myNickname));
+                    System.exit(0);
+                }
         }
-        
+        /**
+         * Wysyła pakiet do serwera
+         * @param nrPack    numer pakietu
+         * @param text      zawartość pakietu
+         */
         private void sendPack(int nrPack, String text){
             byte[] daneDW = (Integer.toString(nrPack) + ";" + text + ";").getBytes();
             System.out.println("Sended: " + Integer.toString(nrPack) + ";" + text + ";");

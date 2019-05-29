@@ -26,7 +26,10 @@ public class Room extends Thread{
         kto = rand.nextInt(2);
         odgadniete = false;
     }
-    
+    /**
+     * Dodaje użytkownika do listy graczy w danym pokoju
+     * @param person    Nowy gracz
+     */
     public void addUser(Person person){
         users.add(person);
         for(int i = 0; i < users.size(); i++){
@@ -35,24 +38,37 @@ public class Room extends Thread{
             }
         }
     }
-    
+    /**
+     * @return      Zwraca ilość graczy w pokoju 
+     */
     public int getUserCount(){
         return users.size();
     }
-    
+    /**
+     * @return      Zwraca true albo false w zależnosci czy jest 3 graczy co jest jednoznaczne że są w trakcie rozgrywki
+     */
     public boolean isWorking(){
         return users.size() == 3;
     }
-    
+    /**
+     * Wysyła graczom komunikat kogo obecnie jest kolej zgadywania
+     */
     public void ktoZgaduje(){
         sendToAll(6, users.get(kto).getMyLogin());
         if(kto == 3) kto = 0;
     }
-    
+    /**
+     * Wysyła graczom komunikat o jaką stawkę toczy się obecnie rozgrywka
+     */
     public void stawka(){
         sendToAll(8, Integer.toString(rand.nextInt(1400)+100));
     }
-    
+    /**
+     * Funkcja sprawdzająca to co zgaduje użytkownik
+     * Wysyła komunikat co jest obecnie zgadywane
+     * @param zgadywane Jeżeli długość stringa jest równa = 1 sprawdza czy została trafiona literka, w wypadku kiedy jest dłuższa sprawdza czy zgadywane hasło jest poprawne
+     * Jeżeli hasło zostało odgadnięte kończy rozgrywkę wysyłając pakiet nr 11 i czyści wszystkie zmienne
+     */
     public void zgaduje(String zgadywane){
         sendToAll(7, zgadywane);
         int ile = 0;
@@ -82,17 +98,30 @@ public class Room extends Thread{
         }
         if(odgadniete){
             sendToAll(11, users.get(kto).getMyLogin().concat(";").concat(haslo));
+            for(int i = 0; i < users.size(); i++) users.remove(i);
+            haslo = zakodowaneHaslo = "";
+            kto = 0;
+            odgadniete = false;   
         }else{
+            sendToAll(5, zakodowaneHaslo);
             sendToAll(5, zakodowaneHaslo);
             ktoZgaduje();
             stawka();
         }
     }
-    
+    /**
+     * Wysyła graczom obecny stan punktów danego gracza
+     * @param kto   kogo punkty
+     * @param ile   ile ma punktów
+     */
     public void przekazPkt(String kto, String ile){
         sendToAll(10, kto.concat(";").concat(ile));
     }
-    
+    /**
+     * Sprawdza ile razy dana litera występuje hasle i jezeli wystepuje podmienia znak '_' na daną litere
+     * @param z     litera do sprawdzenia
+     * @return      ilosc wystąpień
+     */
     private int sprawdzLitere(String z){
         int ile = 0;
         try {
@@ -121,7 +150,12 @@ public class Room extends Thread{
         ktoZgaduje();
         stawka();
     }
-    
+    /**
+     * Wysyła pakiet do klienta
+     * @param nrPack    Numer pakietu
+     * @param text      Zawartość pakietu
+     * @param person    Do kogo ma być wysłany 
+     */
     private void sendPack(int nrPack, String text, Person person){
         byte[] daneDW = (Integer.toString(nrPack) + ";" + text + ";").getBytes();
         System.out.println("Sended: " + Integer.toString(nrPack) + ";" + text + ";");
@@ -132,12 +166,18 @@ public class Room extends Thread{
             System.err.println("IOE");
         }
     }  
-    
+    /**
+     * Wysyła pakiet to wszystkich użytkowników w pokoju
+     * @param nrPack    Numer pakietu
+     * @param text      Zawartość pakietu
+     */
     private void sendToAll(int nrPack, String text){
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < users.size(); i++)
             sendPack(nrPack, text, users.get(i));
     }
-    
+    /**
+     * Wczytuje wszystkie hasla z pliku i losuje jedno do rozgrywki a nastepnie wywołująć kolejną funkcje zakodowuje hasło
+     */
     private void wczytajHaslo(){
         String[] hasla = new String[1000];
         int ile = 0;
@@ -155,7 +195,9 @@ public class Room extends Thread{
         }
         zakodujHaslo();
     }
-    
+    /**
+     * Zakodowuje hasło wybrane do zgadywania w trakcie danej rozgrywki
+     */
     private void zakodujHaslo(){
         for(int i = 0; i < haslo.length(); i++){
             if(haslo.indexOf(i) == ' '){
@@ -165,6 +207,27 @@ public class Room extends Thread{
                 zakodowaneHaslo += "_ ";
             }
         }
+    }
+    /**
+     * Usuwa gracza z listy grazy w pokoju, funkcja możliwa tylko przed wystartowaniem rozgrywki
+     * @param nickname  Nickname do usunięcia
+     */
+    public void usunGracza(String nickname){
+        for(int i = 0; i < users.size(); i++){
+            if(users.get(i).getMyLogin().equals(nickname))
+                users.remove(i);
+        }
+        sendToAll(12, nickname);
+    }
+    /**
+     * Wysyła graczom informację że jeden z graczy wyszedł z aplikacji żeby wrócili do lobby oraz czyści swoje dane aby być gotowym na kolejną rozgrywkę
+     */
+    public void wyszedlGracz(){
+        sendToAll(13, "");
+        users = new ArrayList<>();
+        haslo = zakodowaneHaslo = "";
+        kto = 0;
+        odgadniete = false;  
     }
     
 }

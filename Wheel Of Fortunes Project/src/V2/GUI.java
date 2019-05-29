@@ -10,6 +10,8 @@ public class GUI extends javax.swing.JFrame {
         jLabel2.setVisible(true);
         nickname.setVisible(true);
         startButton.setVisible(true);
+        exitButton.setEnabled(false);
+        errorLobby1.setVisible(false);
     }
     
     @SuppressWarnings("unchecked")
@@ -41,6 +43,8 @@ public class GUI extends javax.swing.JFrame {
         odgadywane = new javax.swing.JLabel();
         litery = new javax.swing.JLabel();
         newGame = new javax.swing.JButton();
+        exitButton = new javax.swing.JButton();
+        leaveButton = new javax.swing.JButton();
         waitingPanel = new javax.swing.JPanel();
         loginLabel = new javax.swing.JLabel();
         loginInLobby = new javax.swing.JLabel();
@@ -48,8 +52,10 @@ public class GUI extends javax.swing.JFrame {
         roomButton = new javax.swing.JButton();
         pokoje = new javax.swing.JTextArea();
         errorLobby = new javax.swing.JLabel();
+        errorLobby1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Wheel Of Fortunes");
 
         jLabel1.setFont(new java.awt.Font("Malgun Gothic Semilight", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -129,6 +135,10 @@ public class GUI extends javax.swing.JFrame {
 
         newGame.setText("Nowa gra");
 
+        exitButton.setText("Exit");
+
+        leaveButton.setText("Back to Lobby");
+
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
@@ -168,24 +178,34 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(gamePanelLayout.createSequentialGroup()
                                 .addComponent(stawka)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(stawkaL))
+                                .addComponent(stawkaL, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(gamePanelLayout.createSequentialGroup()
                                 .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(sendText)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(newGame))))
                     .addGroup(gamePanelLayout.createSequentialGroup()
                         .addGap(230, 230, 230)
                         .addComponent(odgadywane)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(litery)))
-                .addContainerGap(195, Short.MAX_VALUE))
+                .addContainerGap(211, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(leaveButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(exitButton)
+                .addContainerGap())
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePanelLayout.createSequentialGroup()
-                .addGap(140, 140, 140)
+                .addContainerGap()
+                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(exitButton)
+                    .addComponent(leaveButton))
+                .addGap(102, 102, 102)
                 .addComponent(haslo)
                 .addGap(18, 18, 18)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -206,7 +226,7 @@ public class GUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(stawka, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(stawkaL))
+                    .addComponent(stawkaL, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tekstZgadujacego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -238,6 +258,10 @@ public class GUI extends javax.swing.JFrame {
         errorLobby.setForeground(new java.awt.Color(255, 0, 0));
         errorLobby.setText("Wybierz odpowiedni numer pokoju, jeden z pokazanych powyżej.");
 
+        errorLobby1.setFont(new java.awt.Font("Microsoft YaHei UI Light", 0, 14)); // NOI18N
+        errorLobby1.setForeground(new java.awt.Color(255, 0, 0));
+        errorLobby1.setText("Odszedł jeden z graczy z pokoju :/");
+
         javax.swing.GroupLayout waitingPanelLayout = new javax.swing.GroupLayout(waitingPanel);
         waitingPanel.setLayout(waitingPanelLayout);
         waitingPanelLayout.setHorizontalGroup(
@@ -245,9 +269,6 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(waitingPanelLayout.createSequentialGroup()
                 .addGap(55, 55, 55)
                 .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(waitingPanelLayout.createSequentialGroup()
-                        .addComponent(errorLobby)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(waitingPanelLayout.createSequentialGroup()
                         .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(waitingPanelLayout.createSequentialGroup()
@@ -259,7 +280,14 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(loginLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(loginInLobby)
-                        .addGap(246, 246, 246))))
+                        .addGap(246, 246, 246))
+                    .addGroup(waitingPanelLayout.createSequentialGroup()
+                        .addGroup(waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(errorLobby)
+                            .addGroup(waitingPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(errorLobby1)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         waitingPanelLayout.setVerticalGroup(
             waitingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,7 +303,9 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(roomButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(errorLobby)
-                .addContainerGap(399, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errorLobby1)
+                .addContainerGap(373, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -365,12 +395,15 @@ public class GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel errorLobby;
+    public javax.swing.JLabel errorLobby1;
     public javax.swing.JLabel errorLogin;
+    public javax.swing.JButton exitButton;
     public javax.swing.JPanel gamePanel;
     public javax.swing.JLabel haslo;
     public javax.swing.JLabel infoLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    public javax.swing.JButton leaveButton;
     public javax.swing.JLabel litery;
     public javax.swing.JLabel loginInLobby;
     public javax.swing.JLabel loginLabel;
