@@ -49,7 +49,13 @@ public class Server {
                 case "101":
                     rooms[Integer.parseInt(words[1])].addUser(new Person(packet.getAddress(), packet.getPort(), words[2]));
                     if(rooms[Integer.parseInt(words[1])].getUserCount() == 3)
-                        rooms[Integer.parseInt(words[1])].start();
+                        rooms[Integer.parseInt(words[1])].start();     
+                    break;
+                case "102":
+                    rooms[Integer.parseInt(words[1])].zgaduje(words[2]);
+                    break;
+                case "103":
+                    rooms[Integer.parseInt(words[1])].przekazPkt(words[2], words[3]);
                     break;
             }
         }

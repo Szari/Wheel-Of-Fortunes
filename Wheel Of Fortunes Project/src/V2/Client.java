@@ -27,6 +27,7 @@ public class Client extends GUI{
             bHandler = new ButtonHandler(socket);
             startButton.addActionListener(bHandler);
             roomButton.addActionListener(bHandler);
+            sendText.addActionListener(bHandler);
         }catch(SocketException se){
             System.err.println("SE");
         }catch(UnknownHostException uhe){
@@ -42,6 +43,7 @@ public class Client extends GUI{
     private void run(){
         DatagramPacket packet;
         String[] words;
+        int kwota = 0, kwotaa = 0;
         
         while(true){
             packet = getPack();
@@ -49,6 +51,7 @@ public class Client extends GUI{
             
             switch(Integer.parseInt(words[0])){
                 case 1:
+                    myNickname = words[1];
                     loginInLobby.setText(words[1]);
                     player1.setText(words[1]);
                     player1.setVisible(true);
@@ -90,6 +93,48 @@ public class Client extends GUI{
                     haslo.setText(words[1]);
                     odgadywane.setVisible(true);
                     litery.setVisible(true);
+                    break;
+                case 6:
+                    infoLabel.setText("Zgaduje "+words[1]);
+                    if(words[1].equals(player1.getText()))
+                            sendText.setEnabled(true);
+                    break;
+                case 7:
+                    if(litery.getText().equals(""))
+                        litery.setText(litery.getText().concat(words[1]));
+                    else
+                        litery.setText(litery.getText().concat(", ").concat(words[1]));
+                    infoLabel.setText("Zgadywane: "+ words[1]);
+                    break;
+                case 8:
+                    if(!stawka.isVisible()){
+                        stawka.setVisible(true);
+                        stawkaL.setVisible(true);
+                    }
+                    kwotaa = Integer.parseInt(words[1]);
+                    stawkaL.setText(words[1]);
+                    break;
+                case 9:
+                    int ile = Integer.parseInt(words[1]);
+                    if(kwotaa != 0){
+                        kwota += (kwotaa*ile);
+                        pp1.setText(Integer.toString(kwota));
+                        sendPack(103, (Integer.toString(pokoj)).concat(";").concat(player1.getText()).concat(";").concat(Integer.toString(kwota)));
+                    }
+                    break;
+                case 10:
+                    System.out.println("[1]"+words[1]);
+                    System.out.println("[2]"+words[2]);
+                    System.out.println("[3]"+words[3]);
+                    if(player2.getText().equals(words[1]))
+                        pp2.setText(words[2]);
+                    else if(player3.getText().equals(words[1]))
+                        pp3.setText(words[2]);
+                    break;
+                case 11: 
+                    infoLabel.setText("Odgadnieto haslo! Wygrywa " + words[1]);
+                    haslo.setText(words[2]);
+                    newGame.setVisible(true);
                     break;
             }
         }
@@ -160,7 +205,7 @@ public class Client extends GUI{
                         errorLogin.setVisible(true);
                     }
                 }
-                if(source == roomButton){
+                else if(source == roomButton){
                     pokoj = Integer.parseInt(nrPokoju.getText());
                     if(pokoj > 0 && pokoj < 50){
                         waitingPanel.setVisible(false);
@@ -172,6 +217,13 @@ public class Client extends GUI{
                         sendPack(101, Integer.toString(pokoj).concat(";").concat(myNickname));
                     }else{
                         errorLobby.setVisible(true);
+                    }
+                }
+                else if(source == sendText){
+                    if(tekstZgadujacego.getText().length()>0){
+                        sendText.setEnabled(false);
+                        sendPack(102, Integer.toString(pokoj).concat(";").concat(tekstZgadujacego.getText()));
+                        tekstZgadujacego.setText("");
                     }
                 }
         }
