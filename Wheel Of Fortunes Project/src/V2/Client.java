@@ -30,6 +30,8 @@ public class Client extends GUI{
             sendText.addActionListener(bHandler);
             leaveButton.addActionListener(bHandler);
             exitButton.addActionListener(bHandler);
+            exitLogin.addActionListener(bHandler);
+            exitLobby.addActionListener(bHandler);
             newGame.addActionListener(bHandler);
         }catch(SocketException se){
             System.err.println("SE");
@@ -296,9 +298,11 @@ public class Client extends GUI{
                     pp1.setVisible(false);
                     p2.setVisible(false);
                     pp2.setVisible(false);
+                    pp2.setText("");
                     player2.setText("");
                     p3.setVisible(false);
                     pp3.setVisible(false);
+                    pp3.setText("");
                     player3.setText("");
                     haslo.setVisible(false);
                     sendText.setEnabled(false);
@@ -315,9 +319,11 @@ public class Client extends GUI{
                     gamePanel.setVisible(false);
                     p2.setVisible(false);
                     pp2.setVisible(false);
+                    pp2.setText("");
                     player2.setText("");
                     p3.setVisible(false);
                     pp3.setVisible(false);
+                    pp3.setText("");
                     player3.setText("");
                     haslo.setVisible(false);
                     sendText.setEnabled(false);
@@ -329,7 +335,14 @@ public class Client extends GUI{
                         sendPack(104, Integer.toString(pokoj).concat(";").concat(myNickname));
                 }
                 else if(source == exitButton){
-                        sendPack(105, Integer.toString(pokoj).concat(";").concat(myNickname));
+                    sendPack(105, Integer.toString(pokoj).concat(";").concat(myNickname));
+                    System.exit(0);
+                }
+                else if(source == exitLogin){
+                    System.exit(0);
+                }
+                else if(source == exitLobby){
+                    sendPack(106, myNickname);
                     System.exit(0);
                 }
         }

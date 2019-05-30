@@ -54,8 +54,8 @@ public class Room extends Thread{
      * Wysyła graczom komunikat kogo obecnie jest kolej zgadywania
      */
     public void ktoZgaduje(){
-        sendToAll(6, users.get(kto).getMyLogin());
         if(kto == 3) kto = 0;
+        sendToAll(6, users.get(kto).getMyLogin());
     }
     /**
      * Wysyła graczom komunikat o jaką stawkę toczy się obecnie rozgrywka
@@ -94,11 +94,13 @@ public class Room extends Thread{
             } catch (InterruptedException ex) {}
             if(zgadywane.equals(haslo)){
                 odgadniete = true;
+            }else{
+                kto++;
             }
         }
         if(odgadniete){
             sendToAll(11, users.get(kto).getMyLogin().concat(";").concat(haslo));
-            for(int i = 0; i < users.size(); i++) users.remove(i);
+            users = new ArrayList<>();
             haslo = zakodowaneHaslo = "";
             kto = 0;
             odgadniete = false;   
@@ -200,7 +202,7 @@ public class Room extends Thread{
      */
     private void zakodujHaslo(){
         for(int i = 0; i < haslo.length(); i++){
-            if(haslo.indexOf(i) == ' '){
+            if(haslo.charAt(i) == ' '){
                 zakodowaneHaslo+="  ";
             }
             else{

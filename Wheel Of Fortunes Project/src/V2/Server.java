@@ -79,6 +79,12 @@ public class Server {
                     }
                     rooms[Integer.parseInt(words[1])].wyszedlGracz();
                     break;
+                case "106":
+                    for(int i = 0; i < users.size(); i++){
+                        if(users.get(i).getMyLogin().equals(words[1]))
+                            users.remove(i);
+                    }
+                    break;
             }
         }
     }
