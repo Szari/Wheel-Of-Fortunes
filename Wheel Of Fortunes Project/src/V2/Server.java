@@ -14,16 +14,16 @@ public class Server {
     private ArrayList<Person> users;
     private Room[] rooms;
     private Random rand;
-
+    
     public Server(){
         try{
-           socket = new DatagramSocket(PORT);
-           socket.setSoTimeout(5000);
-           users = new ArrayList<>();
-           rooms = new Room[50];
-           for(int i = 1; i < 50; i++)
-               rooms[i] = new Room(socket);
-           rand = new Random();
+            socket = new DatagramSocket(PORT);
+            socket.setSoTimeout(5000);
+            users = new ArrayList<>();
+            rooms = new Room[50];
+            for(int i = 1; i < 50; i++)
+                rooms[i] = new Room(socket);
+            rand = new Random();
         }catch(SocketException se){System.err.println("Socket Exception");}
     }
     
@@ -32,8 +32,8 @@ public class Server {
         server.run();
     }
     /**
-     * Funkcja nasłuchująca 
-     * Odbiera pakiety od użytkownika 
+     * Funkcja nasłuchująca
+     * Odbiera pakiety od użytkownika
      * Pakiety przekazuje do odpowiednich wątków, jeżeli taka potrzeba
      * Pakiety:
      *      - 100: Serwer dostaje nickname nowego gracza
@@ -58,9 +58,11 @@ public class Server {
                     sendPack(2, getWaitingRooms(), users.get(users.size()-1));
                     break;
                 case "101":
-                    rooms[Integer.parseInt(words[1])].addUser(new Person(packet.getAddress(), packet.getPort(), words[2]));
-                    if(rooms[Integer.parseInt(words[1])].getUserCount() == 3)
-                        rooms[Integer.parseInt(words[1])].run();
+                    if(rooms[Integer.parseInt(words[1])].getUserCount() < 3){
+                        rooms[Integer.parseInt(words[1])].addUser(new Person(packet.getAddress(), packet.getPort(), words[2]));
+                        if(rooms[Integer.parseInt(words[1])].getUserCount() == 3)
+                            rooms[Integer.parseInt(words[1])].run();
+                    }
                     sendToAll(2, getWaitingRooms());
                     break;
                 case "102":
@@ -89,7 +91,7 @@ public class Server {
         }
     }
     /**
-     * Funkcja odbierająca pakiet od użytkownika 
+     * Funkcja odbierająca pakiet od użytkownika
      * @return pakiet który został odebrany
      */
     private DatagramPacket getPack(){
@@ -122,7 +124,7 @@ public class Server {
      * Funkcja wysyłająca pakiet do użytkownika
      * @param nrPack    numer pakietu
      * @param text      treść pakietu
-     * @param person    dane użytkownika do którego ma trafić pakiet 
+     * @param person    dane użytkownika do którego ma trafić pakiet
      */
     private void sendPack(int nrPack, String text, Person person){
         byte[] daneDW = (Integer.toString(nrPack) + ";" + text + ";").getBytes();
@@ -138,8 +140,8 @@ public class Server {
     }
     
     /**
-     * Funkcja zamienia pakiet na tablice ciagów liter 
-    */
+     * Funkcja zamienia pakiet na tablice ciagów liter
+     */
     private String[] packToArray(DatagramPacket packet){
         return new String(packet.getData()).split(";");
     }

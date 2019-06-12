@@ -79,7 +79,7 @@ public class Room extends Thread{
             }else
                 sendPack(9, Integer.toString(ile), users.get(kto));
             boolean jest = false;
-            for(int i = 0; i < haslo.length(); i++){
+            for(int i = 0; i < zakodowaneHaslo.length(); i++){
                 if(zakodowaneHaslo.charAt(i) == '_'){
                     jest = true;
                     break;
@@ -99,6 +99,7 @@ public class Room extends Thread{
             }
         }
         if(odgadniete){
+            sendToAll(11, users.get(kto).getMyLogin().concat(";").concat(haslo));
             sendToAll(11, users.get(kto).getMyLogin().concat(";").concat(haslo));
             users = new ArrayList<>();
             haslo = zakodowaneHaslo = "";
